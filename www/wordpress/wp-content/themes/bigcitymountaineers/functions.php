@@ -15,9 +15,10 @@ function bigcitymountaineers_scripts() {
 	
 	/* Big City Mountaineers Custom Theme Javascript */
 	wp_deregister_script( 'wp-embed' ); // Remove WordPress oEmbed feature.
+	
 	if(is_front_page()) { // Remove Unneeded libariries from the homepage
 		wp_deregister_style( 'formidable' ); // Formidable CSS
-		wp_deregister_script( 'jquery' ); // Remove WordPress jquery version and use our own.
+		// wp_deregister_script( 'jquery' ); // Remove WordPress jquery version and use our own.
 	}
 
     wp_enqueue_script( 'bigcitymountaineers-script', get_template_directory_uri() . '/assets/js/site.min.js', array(), filemtime( get_stylesheet_directory() . '/assets/js/site.min.js'), true ); 
