@@ -302,6 +302,6 @@ class basic_text extends WP_Widget {
 }
 add_action( 'widgets_init', 'register_basic_text_widget' ); */
 
-add_action('widgets_init', function()) {
+add_action('widgets_init', function() {
   register_widget('basic_text');
 });
