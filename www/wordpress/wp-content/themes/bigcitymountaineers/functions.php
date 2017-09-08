@@ -9,19 +9,19 @@ add_filter('upload_mimes', 'bigcitymountaineers_mime_types');
 /**
  * Enqueue scripts and styles
  */
-function bigcitymountaineers_scripts() {    
-    /* Big City Mountaineers Custom Theme CSS */ 
+function bigcitymountaineers_scripts() {
+    /* Big City Mountaineers Custom Theme CSS */
 	wp_enqueue_style( 'bigcitymountaineers-style', get_template_directory_uri() . '/assets/css/site.min.css', NULL, filemtime( get_stylesheet_directory() . '/assets/css/site.min.css'));
-	
+
 	/* Big City Mountaineers Custom Theme Javascript */
 	wp_deregister_script( 'wp-embed' ); // Remove WordPress oEmbed feature.
-	
+
 	if(is_front_page()) { // Remove Unneeded libariries from the homepage
 		wp_deregister_style( 'formidable' ); // Formidable CSS
 		// wp_deregister_script( 'jquery' ); // Remove WordPress jquery version and use our own.
 	}
 
-    wp_enqueue_script( 'bigcitymountaineers-script', get_template_directory_uri() . '/assets/js/site.min.js', array(), filemtime( get_stylesheet_directory() . '/assets/js/site.min.js'), true ); 
+    wp_enqueue_script( 'bigcitymountaineers-script', get_template_directory_uri() . '/assets/js/site.min.js', array(), filemtime( get_stylesheet_directory() . '/assets/js/site.min.js'), true );
 }
 add_action( 'wp_enqueue_scripts', 'bigcitymountaineers_scripts' );
 
@@ -74,7 +74,7 @@ add_action( 'init', 'disable_wp_emojicons' );
 /**
  * Disable Miscellaneous WordPress Header Includes
  */
-function bigcitymountaineers_remove_head_links() { 
+function bigcitymountaineers_remove_head_links() {
 	remove_action( 'wp_head', 'feed_links_extra', 3 ); // Display the links to the extra feeds such as category feeds
 	remove_action( 'wp_head', 'feed_links', 2 ); // Display the links to the general feeds: Post and Comment Feed
 	remove_action( 'wp_head', 'rsd_link' ); // Display the link to the Really Simple Discovery service endpoint, EditURI link
@@ -88,7 +88,7 @@ function bigcitymountaineers_remove_head_links() {
 	remove_action( 'wp_head', 'wp_oembed_add_discovery_links', 10 ); // Adds oEmbed discovery links in the website.
 	remove_action( 'wp_head', 'wp_resource_hints', 2 );
 	remove_action( 'wp_head', 'wp_shortlink_wp_head'); // Adds a “shortlink” into your document head
-	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );  
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 }
 add_action('init', 'bigcitymountaineers_remove_head_links');
 
@@ -138,3 +138,170 @@ add_theme_support( 'custom-logo', array(
 
 
 
+// foo widget test ----------------------------------------------------------------------
+
+/**
+ * Adds Foo_Widget widget.
+ */
+class Foo_Widget extends WP_Widget {
+
+	/**
+	 * Register widget with WordPress.
+	 */
+	function __construct() {
+		parent::__construct(
+			'foo_widget', // Base ID
+			esc_html__( 'Foo Widget', 'text_domain' ), // Name ** UPDATE NAME HERE
+			array( 'description' => esc_html__( 'A Foo Widget', 'text_domain' ), ) // Args
+		);
+	}
+
+	/**
+	 * Front-end display of widget.
+	 *
+	 * @see WP_Widget::widget()
+	 *
+	 * @param array $args     Widget arguments.
+	 * @param array $instance Saved values from database.
+	 */
+	public function widget( $args, $instance ) {
+		echo $args['before_widget'];
+		if ( ! empty( $instance['title'] ) ) {
+			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
+		}
+		echo esc_html__( 'Hello, World!', 'text_domain' );
+
+		echo $args['after_widget'];
+	}
+
+	/**
+	 * Back-end widget form.
+	 *
+	 * @see WP_Widget::form()
+	 *
+	 * @param array $instance Previously saved values from database.
+	 */
+	public function form( $instance ) {
+		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'New title', 'text_domain' );
+		?>
+		<p>
+		<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'text_domain' ); ?></label>
+		<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
+		</p>
+		<?php
+	}
+
+	/**
+	 * Sanitize widget form values as they are saved.
+	 *
+	 * @see WP_Widget::update()
+	 *
+	 * @param array $new_instance Values just sent to be saved.
+	 * @param array $old_instance Previously saved values from database.
+	 *
+	 * @return array Updated safe values to be saved.
+	 */
+	public function update( $new_instance, $old_instance ) {
+		$instance = array();
+		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+
+		return $instance;
+	}
+
+} // class Foo_Widget
+
+// add function
+
+// register Foo_Widget widget
+function register_foo_widget() {
+    register_widget( 'Foo_Widget' );
+}
+add_action( 'widgets_init', 'register_foo_widget' );
+
+
+
+// another function TEST for multiple widget to page -------------------------------------------
+
+/**
+ * Adds Custom Form widget. TEST TESt
+ */
+class basic_text extends WP_Widget {
+
+	/**
+	 * Register widget with WordPress.
+	 */
+	public function __construct() {
+		parent::__construct( //need to check details ... YES
+			'basic_text', // Base ID
+			__( 'Basic Text For(M)', 'text_domain' ), // Name ** UPDATE NAME HERE text_domain+>tutplustextdomain
+			array(
+        'classname' => 'basic_text',
+        'description' => __( 'Basic text widget example and see..', 'text_domain')
+      )
+		);
+    load_plugin_textdomain('text_domain', false, basename(dirname(__FILE__)).'/languages');
+	} //constract function done before here
+
+	/**
+	 * Front-end display of widget.
+	 */
+	public function widget( $args, $instance ) {
+		// outputs the content of the widget
+    extract($args);
+
+    $title = apply_filters('widget_title', $instance['title']);
+    $message = $instance['message'];
+
+    echo $before_widget;
+
+    if($title) {
+      echo $before_title . $title . $after_title;
+    }
+
+    echo $message;
+    echo $after_widget;
+
+	}
+
+	public function form( $instance ) {
+		// creates the back-end form
+    $title = esc_attr($instance['title(M)']);
+    $message = esc_attr($instance['message(M)']);
+    ?>
+
+    <p>
+      <label for="<?php echo $this->get_field_id('title');?>"><?php _e('Title(w):'); ?></label>
+      <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>"
+      type="text" value="<?php echo $title; ?>" />
+    </p>
+    <p>
+      <label for="<?php echo $this->get_field_id('message'); ?>"><?php _e('Simple (M)'); ?></label>
+      <textarea class="widefat" row="16" cols="20" id="<?php echo $this->get_field_id('message'); ?>" name="<?php echo $this->get_field_name('message'); ?>">
+        <?php echo $message; ?></textarea>
+    </p>
+    <?php
+	}
+
+  // updating widget replacing old istances with new
+	public function update( $new_instance, $old_instance ) {
+		// process widget options on save
+    $instance = $old_instance;
+
+    $instance['title'] = strip_tags($new_instance['title']);
+    $instance['message'] = strip_tags($new_instance['message']);
+
+    return $instance;
+	}
+
+}
+
+// add function and..
+// register basic_form widget
+/*function register_basic_text_widget() {
+    register_widget( 'basic_text' );
+}
+add_action( 'widgets_init', 'register_basic_text_widget' ); */
+
+add_action('widgets_init', function()) {
+  register_widget('basic_text');
+});
