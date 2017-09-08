@@ -138,6 +138,11 @@ add_theme_support( 'custom-logo', array(
 
 
 
+/**
+ * Custom Elementor Plugin
+ */
+include 'widgets/register-custom-elementor-widgets.php';
+
 // foo widget test ----------------------------------------------------------------------
 
 /**
@@ -211,6 +216,7 @@ class Foo_Widget extends WP_Widget {
 } // class Foo_Widget
 
 // add function
+
 
 // register Foo_Widget widget
 function register_foo_widget() {
