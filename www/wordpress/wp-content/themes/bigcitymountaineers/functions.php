@@ -146,3 +146,5 @@ include 'widgets/register-custom-elementor-widgets.php';
 include 'widgets/foo-widget.php';
 
 include 'widgets/basic-text.php';
+
+include 'widgets/short-blogy-content.php';
